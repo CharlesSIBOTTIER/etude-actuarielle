@@ -5,6 +5,7 @@ sinistres<-read.csv2("https://raw.githubusercontent.com/CharlesSIBOTTIER/etude-a
 #Importation avec une boite de dialogue
 #readline(prompt="Quel est le lien du fichier ? Entrez le chemin, et le nom et l'extention : ")
 
+
 #Définit la fonction pour calculer le premier triangle
 premiertriangle<-function(){
   #Récupère l'année de survenance et le met dans le tableau
@@ -12,6 +13,9 @@ premiertriangle<-function(){
   
   #Convertie le dataframe en matrice
   sinistres<-as.matrix(sinistres)
+  
+  #Initialise la matrice accueillant le chain Ladder
+  total<-matrix(nrow=as.numeric(max(sinistres[,6]))-as.numeric(min(sinistres[,6]))+1,ncol=as.numeric(max(sinistres[,6]))-as.numeric(min(sinistres[,6]))+1)
   
   #-----------------Initialisation des variables---------------
   #Initialise le montant payer
@@ -67,12 +71,12 @@ coefficient<-function(){
   
   #--------Définir le nombre de boucle
   #Définit le nombre de ligne à traité pour le premier tour
-  nbligne<-nrow(premiertriangle)-1
+  nbligne<-nrow(premierTriangle)-1
   #Définit le nombre de colonne
-  nbcolonne<-ncol(premiertriangle)
+  nbcolonne<-ncol(premierTriangle)
   
   #Définit la matrice des coefficiants (1 ligne, et le nombre de colonne du premier triangle)
-  coefficient<-matrix(nrow = 1,ncol = ncol(premiertriangle))
+  coefficient<-matrix(nrow = 1,ncol = ncol(premierTriangle))
   #Permet de définir la première valeur de la matrice en tant que 0
   coefficient[1,1]<-0
   #Permet de faire la boucle sur les colonnes
@@ -82,9 +86,9 @@ coefficient<-function(){
       #Permet de faire la boucle sur les lignes
       for (ligne in 1:nbligne){
         #Fait la somme de la première colonne
-        premier=premier+premiertriangle[ligne,colonne]
+        premier=premier+premierTriangle[ligne,colonne]
         #Fait la somme sur la colonne suivante
-        second=second+premiertriangle[ligne,colonne+1]
+        second=second+premierTriangle[ligne,colonne+1]
       }
       #Affecte le coefficient à la matrice des coefficients
       coefficient[colonne+1]<-second/premier
@@ -97,7 +101,7 @@ coefficient<-function(){
     }
   }
   #Permet de faire la fusion entre la matrice coefficient et la matrice des coefficents
-  triangle<-rbind(premiertriangle,coefficient)
+  triangle<-rbind(premierTriangle,coefficient)
   return (triangle)
 }
 
@@ -127,8 +131,34 @@ chainLadder<-function(){
   return(triangle)
 }
 
-#Permet de récupérer le tableau complet
-tablechainLadder<-chainLadder()
+#Permet de calculer les provisions
+calculProvision<-function(){
+  #Permet de récupérer le tableau complet
+  tablechainLadder<-chainLadder()
+  #Création du tableau pour le calcul du provisionnement
+  tableauprovision<-matrix(nrow=nrow(tablechainLadder),ncol=1)
+  #Initialisation des variables
+  j=1
+  total=0
+  #Parcours la tablechainLadder pour faire la différence entre la charge ultime et le dernier règlement pour calculer le montant de provision
+  for (i in ncol(tablechainLadder):1){
+    #Calcul le montant de provision pour l'année j
+    tableauprovision[j,1]<-tablechainLadder[j,ncol(tablechainLadder)]-tablechainLadder[j,i]
+    #Permet de faire la somme des provisions
+    total=total+as.numeric(tablechainLadder[j,ncol(tablechainLadder)]-tablechainLadder[j,i])
+    #Permet de passée à l'année suivante
+    j=j+1
+  }
+  #Permet de mettre le montant total des provisions dans la dernière cellule
+  tableauprovision[nrow(tableauprovision),1]<-total
+  #Concatène tableau provision avec le tableau de Chain Ladder
+  tableauchainLadder<-cbind(tablechainLadder,tableauprovision)
+  
+  return(tableauchainLadder)
+}
+
+#Permet de retourner le montant de Chain Ladder avec le calcul des provisions
+tableauchainLadder<-calculProvision()
 
 #Permet l'exportation du tableau
-write.csv2(tablechainLadder,"C:/Users/Charles/OneDrive - Université de Poitiers/IRIAF/Études bilatéral/Étude actuarielle/Codes Charles/Code R/toto.csv")
+#write.csv2(tableauchainLadder,"C:/Users/Charles/OneDrive - Université de Poitiers/IRIAF/Études bilatéral/Étude actuarielle/tableChainLadder.csv")
