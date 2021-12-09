@@ -39,7 +39,7 @@ premiertriangle<-function(){
           paiement = paiement+ as.numeric(sinistres[montant_paye,7])
         }
       }
-      #Vérifie si le montant est différent de 0 (notamment quand on remplis les autres lignes du tableau)
+      #Vérifie si le montant est différent de 0 (notamment quand on remplit les autres lignes du tableau)
       if (paiement!=0){
         #Renseigne pour la ligne b et la colonne a le montant concerné
         total[ligne,colonne]<-round(paiement,2)
@@ -161,4 +161,4 @@ calculProvision<-function(){
 tableauchainLadder<-calculProvision()
 
 #Permet l'exportation du tableau
-#write.csv2(tableauchainLadder,"C:/Users/Charles/OneDrive - Université de Poitiers/IRIAF/Études bilatéral/Étude actuarielle/tableChainLadder.csv")
+write.csv2(tableauchainLadder,"C:/Users/Charles/OneDrive - Université de Poitiers/IRIAF/Études bilatéral/Étude actuarielle/tableChainLadder.csv")
