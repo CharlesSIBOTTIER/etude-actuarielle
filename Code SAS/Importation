@@ -1,0 +1,8 @@
+/*Importation des données*/
+proc import datafile="Z:\Master SARADS\Étude bilatéral\Étude Actuarielle\DTA_Claims.csv"
+    out=ETUDE.DTS_SINISTRES   /* Nom de la table en sortie */
+    dbms=csv                /* Le type de données à importer */
+    replace;               /* A utiliser pour remplacer la table de sortie*/
+    delimiter=';';           /* Le séparateur utilisé */
+    getnames=yes;           /* Prendre la première ligne comme nom de colonnes */
+run;
